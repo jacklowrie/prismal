@@ -1,0 +1,156 @@
+[project]
+name = "prismal"
+version = "0.1.0"
+description = "template for AI/ML research"
+readme = "README.md"
+authors = [
+    { name = "Jack Lowrie", email = "jacklowrie@me.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "dotenv>=0.9.9",
+    "numpy>=2.4.4",
+    "pydantic>=2.13.3",
+    "tqdm>=4.67.3",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.8,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+#- Analysis dependencies
+analysis = [
+    "marimo>=0.23.4",
+    "polars>=1.40.1",
+    "seaborn>=0.13.2",
+]
+
+## If you prefer jupyter/pandas, add/switch to this group.
+## Prefer using one over both.
+# analysis-legacy = [
+#     "ipywidgets>=8.1.8",
+#     "jupyterlab>=4.5.7",
+#     "matplotlib>=3.10.9",
+#     "numpy>=2.4.4",
+#     "pandas>=3.0.2",
+#     "pyarrow>=24.0.0", # native in polars
+# ]
+
+# Dev environment dependencies
+# These can be skipped for scripted runs in noninteractive environments
+dev = [
+    "prek>=0.3.11",
+    "pytest>=9.0.3",
+    "ruff>=0.15.12",
+    "ty>=0.0.34",
+]
+
+# Dependencies for running local inference. Also useful for local development,
+# Especially developing pipelines against small (<3B) models.
+local-inference = [
+    "accelerate>=1.13.0",
+    "bitsandbytes>=0.49.2",
+    "torch>=2.11.0",
+    "transformers>=5.7.0",
+]
+remote-inference = [
+    "openai>=2.33.0",
+    "requests>=2.33.1",
+]
+
+[tool.uv]
+required-version = ">=0.10.7"
+
+[tool.ruff]
+line-length = 88 # default value, included to be explicit.
+extend-exclude = ["data", "outputs", "*.sh"]
+
+[tool.ruff.lint]
+select = [
+    "ERA", # catching commented-out code.
+    "ANN", # flake8 annotations: enforce annotations for typechecking. :)
+    "ASYNC", #flake8 async: lint async code if present (i.e. remote inference).
+    "B", # flake8-bugbear: catch bugs that don't fit in pyflakes/pycodestyle.
+    "COM818", # flake8 trailing comma on bare tuples (rest in formatter).
+    "C4", # flake8 comprehensions.
+    "EM", # flake8 errmsg: enforce better exception handling messages.
+    "FIX", # flake8 fixme: no tasks in code comments (put them in PM tools).
+    "ISC", # flake8 implicit-str-concat: standard conventions for long strings.
+    "T20", # flake8 print: don't commit debug prints (prefer logging).
+    "RSE", # flake8-raise: better stacktraces.
+    "RET", # flake8-return: better/simpler return statements.
+    "SIM", # flake8-simplify: check for simplification opportunities.
+    "ARG", # simplify function contracts (no unused args).
+    "PTH", # flake8 use pathlib: better filepath manipulation.
+    "FLY", # use fstrings instead of str.join()'s
+    "I", # isort: catch missing/randomly ordered imports
+    "NPY", # numpy-specific linting rules.
+#     "PD", # pandas-specific linting. Uncomment if using analysis-legacy deps.
+    "E", # pycodestyle errors.
+    "W", # pycodestyle warnings.
+    "D", # "pydocstyle: requiring code documentation :) - simple doc linting.
+    "F", # pyflakes: catch errors in source files.
+    "UP", # pyupgrade: auto-apply syntax upgrades for newer python versions.
+    "RUF", # Ruff-native/specific rules.
+    "TRY", # try.ceratops: better exception/logging.
+]
+ignore = ["F403", "F405"]
+
+[tool.ruff.lint.per-file-ignores]
+"colab/**/*.ipynb" = [ # this should just be the colab-equivalent of a script.
+    "ANN",
+    "D",
+    "DOC",
+    "T20",
+    "F401",
+    "F841",
+    "E402",
+]
+
+"notebooks/**/*.py" = [ # marimo notebooks
+    "ANN",
+    "D",
+    "DOC",
+    "T20",
+    "F401",
+    "F841",
+    "E402",
+]
+
+"notebooks/**/*.ipynb" = [ # jupyter notebooks
+    "ANN",
+    "D",
+    "DOC",
+    "T20",
+    "F401",
+    "F841",
+    "E402",
+]
+
+"tests/**/*.py" = [ # tests shouldn't be linted heavily if optional
+    "ANN",
+    "D",
+    "DOC",
+    "T20",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+line-ending = "lf"
+docstring-code-format = true
+
+[tool.ty]
+# ty picks up the version from above, but exclusions go here as needed.
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+pythonpath = [
+ "src",
+]
+testpaths = [
+    "tests",
+]

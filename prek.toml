@@ -1,0 +1,67 @@
+# prek.toml: Config for prek tool. See docs at https://prek.j178.dev/
+
+# Prek is a drop-in replacement for pre-commit, the OG tool for running checks
+# automatically on each local commit (think making sure the linter runs before
+# every local commit, and blocking the commit/push if the linter should fail).
+
+# Prek is compatible with pre-commit yaml configs, see the docs if needed.
+
+#
+# pre-commit hooks (auto-fast path uses supported built-in hooks)
+#
+
+[[repos]]
+repo="https://github.com/pre-commit/pre-commit-hooks"
+rev="v6.0.0"
+hooks = [
+    { id = "check-docstring-first" },
+    { id = "check-added-large-files" },
+    { id = "check-merge-conflict" },
+    { id = "check-symlinks" },
+    { id = "check-toml" },
+    { id = "debug-statements" },
+    { id = "detect-private-key" },
+    { id = "end-of-file-fixer" },
+    { id = "forbid-submodules" },
+    { id = "trailing-whitespace" },
+    { id = "mixed-line-ending", args = ["--fix=lf"] },
+]
+
+#
+# Local
+#
+
+[[repos]]
+repo = "local"
+
+[[repos.hooks]]
+id="lint"
+name="lint"
+language="system"
+entry="uv run ruff check --fix"
+pass_filenames=false
+
+[[repos.hooks]]
+id="format"
+name="format"
+language="system"
+entry="uv run ruff format"
+pass_filenames=false
+
+[[repos.hooks]]
+id="typecheck"
+name="typecheck"
+language="system"
+entry="uv run ty check"
+pass_filenames=false
+
+# You could also uncomment the following hook to run tests on every commit.
+# Note that this has the potential to slow down your iteration loop if your
+# test-suite takes a perceptible amount of time to run. Even 1 second adds up.
+
+# [[repos.hooks]]
+# id="tests"
+# name="tests"
+# language="system"
+# entry="uv run pytest"
+# pass_filenames=false
