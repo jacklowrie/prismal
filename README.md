@@ -1,7 +1,52 @@
 # Prismal
 Opinionated scaffolding for AI/ML Research.
 
-## Project Structure
+## Opinionated Choices
+This is a summary of the key choices made by using this template.
+
+### Project Organization
+We base the project structure from the following perspective:
+- experiments should be modular and composable
+- Data needs to follow consistent and expected schema in order for it to be readily passed between them
+- each component of an experiment should be well-documented, both for collaborators and for downstream consumers of the research.
+
+- notebooks are for analysis of data and results, not running experiments:
+    - scripts beat notebooks for developing composable, reusable pipelines.
+    - notebooks beat scripts for exploring, analyzing, and presenting data (inputs or results)
+
+### Main Tech Stack
+- `uv` for project/dependency management
+- `pydantic` for config and data Schema
+- `ruff` for linting/formatting
+- `ty` for type-checking
+
+These are the biggest opinionated choices, and the hardest ones to change - it would be better to not use the template if these choices are unacceptable. We make heavy use of [Astral](https://astral.sh)'s tooling in place of `conda`, `mypy` (or no type annotations) and similar. `uv` only works with python environments, but it excels at managing fully reproducable envs. It is also highly performant in resolving and installing dependencies. Conda is great with system dependencies, but not as much with reproducible python environments, and system dependencies tend to be less portable. `conda` and `uv` can be used together, so long as they aren't both trying to override each other. We opt here to use uv, leaving system-specific configuration management to conda running on the machines in question (since they will need to change each time).  In short: python dependencies get managed with `uv`, the rest (if necessary) is up to you.
+
+We use `pydantic` to enforce consistent schema for experiment parameters (configs like "models to test", "batch size", "temperature", etc), and for data (including prompt datasets, response datasets, and results datasets).
+This both makes it easier to find where key experiment variables are set, and to ensure that data is stored as expected by each part of the experimental pipeline.
+
+Finally, we use `ruff` to enforce a fairly comprehensive set of linting rules by default. This can be customized as needed, however it's much easier to start with a strict set of linting rules and relax than it is to add linting rules after development is under way. Consider sticking with them - they're meant to help researchers write code that is easier for future researchers to understand, consume, reproduce, and expand on. `ruff` also enforces code to be documented, making collaboration and publication easier.
+
+We also add two core dependencies for convenience:
+- `tqdm` for progress bars in notebooks and scripts - invaluable if you haven't used before.
+- `dotenv` for secret management - especially great if using huggingface models
+- `prek` for automatic code checking on commits
+- `pytest` for testing, though tests are not enabled in pre-commit hooks by default.
+
+### Data analysis
+These are easier to change, but we choose defaults with intention:
+- `parquet` for data storage
+- `polars` for dataframes
+- `marimo` for notebooks
+
+`parquet` is more performant than `csv` files, and `polars`/ and `marimo` are more performant than their counterparts (`pandas` and `jupyter`). We use them by default, however we leave toggles for switching or adding `pandas`/`jupyterlab` if necessary. In order for research to scale to larger datasets, `polars` is strongly encouraged.
+
+### AI/ML
+We use `PyTorch` and huggingface `transformers` by default for local work. If training or local inference aren't necessary, these can be skipped.
+We also add `accelerate` and `bitsandbytes` to help speed up inference on smaller/consumer machines.
+
+
+## Repo Structure
 ### Top-level directories
 Research code and artifacts are organized with the following directory structure:
 - `colab/`: notebooks specifically meant for running experiments on colab.
@@ -43,7 +88,7 @@ You can create a template directly from this repo on GitHub (easier/preferred), 
 1. Replace project metadata in `pyproject.toml` with your own project metadata.
 2. Rename the root package name for your source code (`mv src/prismal src/[your_project]`)
 3. Remove any commented/unnecessary dependency groups and linter rules `from pyproject.toml`
-3. UPDATE this README with your own project specifics, and remove this section of the installation instructions.
+3. UPDATE this README with your own project specifics, and remove the "Opinionated Choices" section and this section of the installation instructions.
 
 ### Setting up local env
 1. Clone or download this repo.
