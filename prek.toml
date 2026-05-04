@@ -6,10 +6,9 @@
 
 # Prek is compatible with pre-commit yaml configs, see the docs if needed.
 
+##
+# pre-commit-hooks: core hooks (builtin, auto-fastpath falls back to pre-commit)
 #
-# pre-commit hooks (auto-fast path uses supported built-in hooks)
-#
-
 [[repos]]
 repo="https://github.com/pre-commit/pre-commit-hooks"
 rev="v6.0.0"
@@ -24,13 +23,22 @@ hooks = [
     { id = "end-of-file-fixer" },
     { id = "forbid-submodules" },
     { id = "trailing-whitespace" },
-    { id = "mixed-line-ending", args = ["--fix=lf"] },
+    { id = "mixed-line-ending", args = ["--fix=lf"] }, # use \n for endings.
 ]
 
+##
+# rumdl: Markdown linting/formatting
 #
-# Local
-#
+[[repos]]
+repo="https://github.com/rvben/rumdl-pre-commit"
+rev="v0.1.87"
+hooks = [
+    { id = "rumdl-fmt" },
+   ]
 
+##
+# Local: `uv
+#
 [[repos]]
 repo = "local"
 

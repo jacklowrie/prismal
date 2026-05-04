@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.12"
 dependencies = [
     "dotenv>=0.9.9",
+    "loguru>=0.7.3",
     "numpy>=2.4.4",
     "pydantic>=2.13.3",
     "tqdm>=4.67.3",
@@ -40,9 +41,11 @@ analysis = [
 # Dev environment dependencies
 # These can be skipped for scripted runs in noninteractive environments
 dev = [
+    "pdoc>=16.0.0",
     "prek>=0.3.11",
     "pytest>=9.0.3",
     "ruff>=0.15.12",
+    "rumdl>=0.1.87",
     "ty>=0.0.34",
 ]
 
@@ -154,3 +157,9 @@ pythonpath = [
 testpaths = [
     "tests",
 ]
+
+
+# Per-file rule ignores (both snake_case and kebab-case supported)
+[tool.rumdl.per-file-ignores]
+"README.md" = ["MD033"]
+"SUMMARY.md" = ["MD025"]
