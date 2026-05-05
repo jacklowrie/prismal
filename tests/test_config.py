@@ -22,14 +22,15 @@ def test_paths() -> None:
 
 def test_config_model() -> None:
     """Test that ConfigBase works as expected."""
-    data = {
-        "num_samples": 100,
-        "inference_location": "remote",
-        "input": Path("data/input.csv"),
-        "output": Path("outputs/results.json"),
-    }
-    config = ConfigBase(**data)
+    config = ConfigBase(
+        num_samples=100,
+        inference_location="remote",
+        input=Path("data/input.csv"),
+        output=Path("outputs/results.json"),
+        model_id="gpt-4",
+    )
     assert config.num_samples == 100
     assert config.inference_location == "remote"
     assert config.input.name == "input.csv"
     assert config.output.name == "results.json"
+    assert config.model_id == "gpt-4"
