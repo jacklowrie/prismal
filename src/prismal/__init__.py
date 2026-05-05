@@ -4,8 +4,8 @@ from prismal.data_schema import (
     ExperimentDatasetBase,
     PromptDatasetBase,
     PromptRowBase,
-    ResponseDatasetBase,
-    ResponseRowBase,
+    ResponsesDatasetBase,
+    ResponsesRowBase,
 )
 
 
@@ -18,6 +18,6 @@ __all__ = [
     "ExperimentDatasetBase",
     "PromptDatasetBase",
     "PromptRowBase",
-    "ResponseDatasetBase",
-    "ResponseRowBase",
+    "ResponsesDatasetBase",
+    "ResponsesRowBase",
 ]

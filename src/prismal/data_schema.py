@@ -15,16 +15,22 @@ class PromptRowBase(BaseModel):
     prompt: str = Field(..., description="The prompt string.")
 
 
-class ResponseRowBase(BaseModel):
+class ResponsesRowBase(BaseModel):
     """Base model for responses.
 
     Attributes:
         index: A unique identifier for the response, corresponding to a prompt index.
         responses: A list of response strings.
+        response: The first response string, or an empty string if no responses exist.
     """
 
     index: int = Field(..., description="A unique identifier for the response.")
     responses: list[str] = Field(..., description="A list of response strings.")
+
+    @property
+    def response(self) -> str:
+        """The first response string, or an empty string if no responses exist."""
+        return self.responses[0] if self.responses else ""
 
 
 class PromptDatasetBase(BaseModel):
@@ -46,17 +52,17 @@ class PromptDatasetBase(BaseModel):
         return self
 
 
-class ResponseDatasetBase(BaseModel):
+class ResponsesDatasetBase(BaseModel):
     """Schema for a collection of responses.
 
     Attributes:
-        responses: A list of ResponseRowBase objects.
+        responses: A list of ResponsesRowBase objects.
     """
 
-    responses: list[ResponseRowBase]
+    responses: list[ResponsesRowBase]
 
     @model_validator(mode="after")
-    def check_schema_consistency(self) -> "ResponseDatasetBase":
+    def check_schema_consistency(self) -> "ResponsesDatasetBase":
         """Check for unique indices and consistent response lengths."""
         if not self.responses:
             return self
@@ -79,11 +85,11 @@ class ExperimentDatasetBase(BaseModel):
 
     Attributes:
         prompts: A PromptDatasetBase object.
-        responses: A ResponseDatasetBase object.
+        responses: A ResponsesDatasetBase object.
     """
 
     prompts: PromptDatasetBase
-    responses: ResponseDatasetBase
+    responses: ResponsesDatasetBase
 
     @model_validator(mode="after")
     def check_indices_match(self) -> "ExperimentDatasetBase":

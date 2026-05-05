@@ -9,8 +9,8 @@ from prismal.data_schema import (
     ExperimentDatasetBase,
     PromptDatasetBase,
     PromptRowBase,
-    ResponseDatasetBase,
-    ResponseRowBase,
+    ResponsesDatasetBase,
+    ResponsesRowBase,
 )
 
 
@@ -45,50 +45,59 @@ def test_prompt_schema_unique_index():
 
 
 def test_response_base_valid():
-    """Test valid ResponseRowBase initialization."""
-    r = ResponseRowBase(index=1, responses=["R1", "R2"])
+    """Test valid ResponsesRowBase initialization."""
+    r = ResponsesRowBase(index=1, responses=["R1", "R2"])
     assert r.index == 1
     assert r.responses == ["R1", "R2"]
+    assert r.response == "R1"
+
+
+def test_response_base_empty():
+    """Test ResponsesRowBase with empty responses list."""
+    r = ResponsesRowBase(index=1, responses=[])
+    assert r.index == 1
+    assert r.responses == []
+    assert r.response == ""
 
 
 def test_response_schema_valid():
-    """Test valid ResponseDatasetBase initialization."""
+    """Test valid ResponsesDatasetBase initialization."""
     responses = [
-        ResponseRowBase(index=1, responses=["A1", "B1"]),
-        ResponseRowBase(index=2, responses=["A2", "B2"]),
+        ResponsesRowBase(index=1, responses=["A1", "B1"]),
+        ResponsesRowBase(index=2, responses=["A2", "B2"]),
     ]
-    ResponseDatasetBase(responses=responses)
+    ResponsesDatasetBase(responses=responses)
 
 
 def test_response_schema_inconsistent_lengths():
-    """Test ResponseDatasetBase inconsistent response lengths validation."""
+    """Test ResponsesDatasetBase inconsistent response lengths validation."""
     responses = [
-        ResponseRowBase(index=1, responses=["A1", "B1"]),
-        ResponseRowBase(index=2, responses=["A2"]),
+        ResponsesRowBase(index=1, responses=["A1", "B1"]),
+        ResponsesRowBase(index=2, responses=["A2"]),
     ]
     with pytest.raises(
         ValidationError, match="All cells must have the same number of responses"
     ):
-        ResponseDatasetBase(responses=responses)
+        ResponsesDatasetBase(responses=responses)
 
 
 def test_response_schema_unique_index():
-    """Test ResponseDatasetBase unique index validation."""
+    """Test ResponsesDatasetBase unique index validation."""
     responses = [
-        ResponseRowBase(index=1, responses=["A1"]),
-        ResponseRowBase(index=1, responses=["B1"]),
+        ResponsesRowBase(index=1, responses=["A1"]),
+        ResponsesRowBase(index=1, responses=["B1"]),
     ]
     with pytest.raises(ValidationError, match="All indices must be unique"):
-        ResponseDatasetBase(responses=responses)
+        ResponsesDatasetBase(responses=responses)
 
 
 def test_response_schema_empty_responses():
-    """Test ResponseDatasetBase with empty responses lists."""
+    """Test ResponsesDatasetBase with empty responses lists."""
     responses = [
-        ResponseRowBase(index=1, responses=[]),
-        ResponseRowBase(index=2, responses=[]),
+        ResponsesRowBase(index=1, responses=[]),
+        ResponsesRowBase(index=2, responses=[]),
     ]
-    ResponseDatasetBase(responses=responses)
+    ResponsesDatasetBase(responses=responses)
 
 
 def test_dataset_schema_valid():
@@ -99,10 +108,10 @@ def test_dataset_schema_valid():
             PromptRowBase(index=2, prompt="P2"),
         ]
     )
-    responses = ResponseDatasetBase(
+    responses = ResponsesDatasetBase(
         responses=[
-            ResponseRowBase(index=1, responses=["R1"]),
-            ResponseRowBase(index=2, responses=["R2"]),
+            ResponsesRowBase(index=1, responses=["R1"]),
+            ResponsesRowBase(index=2, responses=["R2"]),
         ]
     )
     ExperimentDatasetBase(prompts=prompts, responses=responses)
@@ -116,10 +125,10 @@ def test_dataset_schema_mismatch():
             PromptRowBase(index=2, prompt="P2"),
         ]
     )
-    responses = ResponseDatasetBase(
+    responses = ResponsesDatasetBase(
         responses=[
-            ResponseRowBase(index=1, responses=["R1"]),
-            ResponseRowBase(index=3, responses=["R3"]),
+            ResponsesRowBase(index=1, responses=["R1"]),
+            ResponsesRowBase(index=3, responses=["R3"]),
         ]
     )
     with pytest.raises(
