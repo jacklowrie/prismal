@@ -74,8 +74,21 @@ class ConfigBase(BaseModel):
         return []
 
 
+def _find_root() -> Path:
+    """Find the root directory of the project.
+
+    This searches upwards from the current file for a 'pyproject.toml' file.
+    """
+    path = Path(__file__).resolve()
+    for parent in path.parents:
+        if (parent / "pyproject.toml").exists():
+            return parent
+    # Fallback if no pyproject.toml is found
+    return path.parent.parent.parent
+
+
 # Root directory of the project.
-ROOT_DIR: Path = Path(__file__).parent.parent.parent.resolve()
+ROOT_DIR: Path = _find_root()
 
 # Directory for configuration files.
 CONFIG_DIR: Path = ROOT_DIR / "config"

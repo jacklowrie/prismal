@@ -168,7 +168,8 @@ update the following in your copy of the template:
    (`mv src/prismal src/[your_project]`)
 3. Remove any commented/unnecessary dependency groups and linter rules
    `from pyproject.toml`
-4. UPDATE this README with your own project specifics, and remove the
+4. remove all tests from `tests`
+5. UPDATE this README with your own project specifics, and remove the
    "Opinionated Choices" section and this section of the installation
    instructions.
 
