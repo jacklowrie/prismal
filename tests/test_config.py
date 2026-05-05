@@ -34,3 +34,19 @@ def test_config_model() -> None:
     assert config.input.name == "input.csv"
     assert config.output.name == "results.json"
     assert config.model_id == "gpt-4"
+    assert config.get_model_ids() == ["gpt-4"]
+
+
+def test_config_get_model_ids_from_path(tmp_path: Path) -> None:
+    """Test get_model_ids when models_path is provided."""
+    models_file = tmp_path / "models.txt"
+    models_file.write_text("gpt-4\nclaude-3-opus", encoding="utf-8")
+
+    config = ConfigBase(
+        num_samples=10,
+        inference_location="local",
+        input=Path("in.csv"),
+        output=Path("out.json"),
+        models_path=models_file,
+    )
+    assert config.get_model_ids() == ["gpt-4", "claude-3-opus"]

@@ -1,8 +1,12 @@
 """Configuration schema/loading and common paths for prismal."""
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, PositiveInt, model_validator
+
+if TYPE_CHECKING:
+    pass
 
 
 class ConfigBase(BaseModel):
@@ -17,7 +21,7 @@ class ConfigBase(BaseModel):
         input: Path to the input data file.
         output: Path where the experiment results will be saved.
         model_id: ID/slug of the model to use.
-        models_path: Path to a file containing the model name.
+        models_path: Path to a file containing the model id's, one per line.
     """
 
     num_samples: PositiveInt
@@ -34,6 +38,26 @@ class ConfigBase(BaseModel):
             msg = "Exactly one of 'model_id' or 'models_path' must be provided."
             raise ValueError(msg)
         return self
+
+    def get_model_ids(self) -> list[str]:
+        """Get the list of model IDs to use.
+
+        If model_id is set, returns a list with that single ID.
+        If models_path is set, reads the IDs from that file.
+
+        Returns:
+            A list of model ID strings.
+        """
+        if self.model_id:
+            return [self.model_id]
+
+        if self.models_path:
+            from prismal.io import read_model_ids
+
+            return read_model_ids(self.models_path)
+
+        # This should be unreachable due to the model_validator
+        return []
 
 
 # Root directory of the project.
