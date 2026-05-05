@@ -1,3 +1,6 @@
+# scopes provided for convenience. remove downstream.
+!.idea/scopes/**
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -36,7 +39,8 @@ MANIFEST
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
+# dev tool artifacts
+.rumdl_cache/
 htmlcov/
 .tox/
 .nox/

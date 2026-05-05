@@ -9,7 +9,8 @@
 - Documentation linting rules are enforced almost everywhere. See docblocks for
   intent/use of local code.
 - The repo uses `prek` for pre-commit hooks, documented at
-  [prek.j178.dev](https://prek.j178.dev/usage/).
+  [prek.j178.dev](https://prek.j178.dev/usage/). You can run all code checks on
+  the codebase with `uv run prek run --all-files`
 - You can run the full set of checks with
   `uv run ruff check --fix && uv run ruff format && uv run ty check`.
 
