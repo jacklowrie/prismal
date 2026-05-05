@@ -12,6 +12,7 @@ def test_config_model_requires_model_or_path():
     common: dict[str, Any] = {
         "num_samples": 100,
         "inference_location": "remote",
+        "inference_url": "http://api.example.com",
         "input": Path("data/input.csv"),
         "output": Path("outputs/results.json"),
     }

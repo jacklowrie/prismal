@@ -25,12 +25,14 @@ def test_config_model() -> None:
     config = ConfigBase(
         num_samples=100,
         inference_location="remote",
+        inference_url="http://api.example.com",
         input=Path("data/input.csv"),
         output=Path("outputs/results.json"),
         model_id="gpt-4",
     )
     assert config.num_samples == 100
     assert config.inference_location == "remote"
+    assert config.inference_url == "http://api.example.com"
     assert config.input.name == "input.csv"
     assert config.output.name == "results.json"
     assert config.model_id == "gpt-4"

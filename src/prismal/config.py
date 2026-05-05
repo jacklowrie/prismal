@@ -1,7 +1,7 @@
 """Configuration schema/loading and common paths for prismal."""
 
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from pydantic import BaseModel, PositiveInt, model_validator
 
@@ -18,6 +18,9 @@ class ConfigBase(BaseModel):
     Attributes:
         num_samples: Number of samples to process in the experiment.
         inference_location: Location or service where inference is performed.
+            Must be either "local" or "remote".
+        inference_url: URL for remote inference. Required if inference_location
+            is "remote".
         input: Path to the input data file.
         output: Path where the experiment results will be saved.
         model_id: ID/slug of the model to use.
@@ -25,18 +28,29 @@ class ConfigBase(BaseModel):
     """
 
     num_samples: PositiveInt
-    inference_location: str
+    inference_location: Literal["local", "remote"]
+    inference_url: str | None = None
     input: Path
     output: Path
     model_id: str | None = None
     models_path: Path | None = None
 
     @model_validator(mode="after")
-    def check_model_or_path(self) -> "ConfigBase":
-        """Ensure that either model_id or models_path is provided, but not both."""
+    def validate_inference_config(self) -> "ConfigBase":
+        """Validate inference configuration.
+
+        Ensures that:
+        1. Either model_id or models_path is provided, but not both.
+        2. inference_url is provided if inference_location is "remote".
+        """
         if (self.model_id is not None) == (self.models_path is not None):
             msg = "Exactly one of 'model_id' or 'models_path' must be provided."
             raise ValueError(msg)
+
+        if self.inference_location == "remote" and not self.inference_url:
+            msg = "inference_url must be provided when inference_location is 'remote'."
+            raise ValueError(msg)
+
         return self
 
     def get_model_ids(self) -> list[str]:
