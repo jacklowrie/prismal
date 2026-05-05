@@ -1,11 +1,11 @@
-"""Tests for the data_schema module."""
+"""Tests for the data module."""
 
 from typing import Any
 
 import pytest
 from pydantic import ValidationError
 
-from prismal.data_schema import (
+from prismal.data import (
     ExperimentDatasetBase,
     PromptDatasetBase,
     PromptRowBase,

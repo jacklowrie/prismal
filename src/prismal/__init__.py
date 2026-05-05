@@ -1,6 +1,13 @@
 """Prismal: template for AI/ML research."""
 
-from prismal.data_schema import (
+from prismal.config import (
+    CONFIG_DIR,
+    DATA_DIR,
+    OUTPUT_DIR,
+    ROOT_DIR,
+    ConfigBase,
+)
+from prismal.data import (
     ExperimentDatasetBase,
     PromptDatasetBase,
     PromptRowBase,
@@ -8,13 +15,12 @@ from prismal.data_schema import (
     ResponsesRowBase,
 )
 
-
-def hello() -> str:
-    """hello-world to confirm installation."""
-    return "Hello from prismal!"
-
-
 __all__ = [
+    "CONFIG_DIR",
+    "DATA_DIR",
+    "OUTPUT_DIR",
+    "ROOT_DIR",
+    "ConfigBase",
     "ExperimentDatasetBase",
     "PromptDatasetBase",
     "PromptRowBase",
