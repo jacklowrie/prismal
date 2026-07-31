@@ -1,34 +1,57 @@
 from pathlib import Path
-from typing import Any
 
 import pytest
 from pydantic import ValidationError
 
-from prismal.config import ConfigBase
+from prismal.config import (
+    ComputeConfig,
+    ConfigBase,
+    DataConfig,
+    ExperimentConfig,
+    ModelConfig,
+)
 
 
 def test_config_model_requires_model_or_path():
-    """Test that ConfigBase requires either model_id or models_path."""
-    common: dict[str, Any] = {
-        "num_samples": 100,
-        "inference_location": "remote",
-        "inference_url": "http://api.example.com",
-        "input": Path("data/input.csv"),
-        "output": Path("outputs/results.json"),
-    }
+    """Test that ConfigBase requires either model.id or model.path."""
+    experiment = ExperimentConfig(name="test", task="test")
+    data = DataConfig(input=Path("data/input.csv"), output=Path("outputs"))
+    compute = ComputeConfig(location="remote", url="http://api.example.com")
 
     # We want it to fail if both are missing
     with pytest.raises(ValidationError):
-        ConfigBase(**common)  # type: ignore[arg-type]
+        ConfigBase(
+            experiment=experiment,
+            data=data,
+            compute=compute,
+            model=ModelConfig(num_samples=100, seed=42),  # type: ignore[call-arg]
+        )
 
     # We want it to fail if both are present
     with pytest.raises(ValidationError):
-        ConfigBase(**common, model_id="gpt-4", models_path=Path("model_id.txt"))  # type: ignore[arg-type]
+        ConfigBase(
+            experiment=experiment,
+            data=data,
+            compute=compute,
+            model=ModelConfig(
+                id="gpt-4", path=Path("model_id.txt"), num_samples=100, seed=42
+            ),
+        )
 
-    # We want it to pass with only model_id
-    config_model = ConfigBase(**common, model_id="gpt-4")  # type: ignore[arg-type]
-    assert config_model.model_id == "gpt-4"
+    # We want it to pass with only model.id
+    config_model = ConfigBase(
+        experiment=experiment,
+        data=data,
+        compute=compute,
+        model=ModelConfig(id="gpt-4", num_samples=100, seed=42),
+    )
+    assert config_model.model.id == "gpt-4"
 
-    # We want it to pass with only models_path
-    config_path = ConfigBase(**common, models_path=Path("model_id.txt"))  # type: ignore[arg-type]
-    assert config_path.models_path == Path("model_id.txt")
+    # We want it to pass with only model.path
+    config_path = ConfigBase(
+        experiment=experiment,
+        data=data,
+        compute=compute,
+        model=ModelConfig(path=Path("model_id.txt"), num_samples=100, seed=42),
+    )
+    assert config_path.model.path == Path("model_id.txt")

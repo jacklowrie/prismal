@@ -43,4 +43,32 @@ def add_common_arguments(parser: argparse.ArgumentParser) -> argparse.ArgumentPa
         type=str,
         help="Model ID to use (overrides config).",
     )
+    parser.add_argument(
+        "-t",
+        "--temperature",
+        type=float,
+        help="Temperature for sampling (overrides config).",
+    )
+    parser.add_argument(
+        "--max-concurrency",
+        type=int,
+        help="Maximum number of concurrent requests (overrides config).",
+    )
+    parser.add_argument(
+        "--rpm-limit",
+        type=int,
+        help="Maximum requests per minute (overrides config).",
+    )
+    parser.add_argument(
+        "--max-retries",
+        type=int,
+        help="Maximum number of retries per request (overrides config).",
+    )
+    parser.add_argument(
+        "--log-level",
+        type=str,
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="Set the logging level (default: INFO).",
+    )
     return parser

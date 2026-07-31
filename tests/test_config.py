@@ -2,7 +2,16 @@
 
 from pathlib import Path
 
-from prismal.config import DATA_DIR, OUTPUT_DIR, ROOT_DIR, ConfigBase
+from prismal.config import (
+    DATA_DIR,
+    OUTPUT_DIR,
+    ROOT_DIR,
+    ComputeConfig,
+    ConfigBase,
+    DataConfig,
+    ExperimentConfig,
+    ModelConfig,
+)
 
 
 def test_paths() -> None:
@@ -15,40 +24,33 @@ def test_paths() -> None:
     assert DATA_DIR == ROOT_DIR / "data"
     assert OUTPUT_DIR == ROOT_DIR / "outputs"
 
-    # We don't necessarily check if they exist because they might not be created yet,
-    # but based on guidelines they should exist in the project structure for
-    # scripts to use.
-
 
 def test_config_model() -> None:
     """Test that ConfigBase works as expected."""
     config = ConfigBase(
-        num_samples=100,
-        inference_location="remote",
-        inference_url="http://api.example.com",
-        input=Path("data/input.csv"),
-        output=Path("outputs/results.json"),
-        model_id="gpt-4",
+        experiment=ExperimentConfig(name="test-exp", task="test-task"),
+        data=DataConfig(input=Path("data/input.csv"), output=Path("outputs")),
+        compute=ComputeConfig(location="remote", url="http://api.example.com"),
+        model=ModelConfig(id="gpt-4", num_samples=100, seed=42),
     )
-    assert config.num_samples == 100
-    assert config.inference_location == "remote"
-    assert config.inference_url == "http://api.example.com"
-    assert config.input.name == "input.csv"
-    assert config.output.name == "results.json"
-    assert config.model_id == "gpt-4"
+    assert config.model.num_samples == 100
+    assert config.compute.location == "remote"
+    assert config.compute.url == "http://api.example.com"
+    assert config.data.input.name == "input.csv"
+    assert config.output_dir.name == "test-exp"
+    assert config.model.id == "gpt-4"
     assert config.get_model_ids() == ["gpt-4"]
 
 
 def test_config_get_model_ids_from_path(tmp_path: Path) -> None:
-    """Test get_model_ids when models_path is provided."""
+    """Test get_model_ids when model.path is provided."""
     models_file = tmp_path / "models.txt"
     models_file.write_text("gpt-4\nclaude-3-opus", encoding="utf-8")
 
     config = ConfigBase(
-        num_samples=10,
-        inference_location="local",
-        input=Path("in.csv"),
-        output=Path("out.json"),
-        models_path=models_file,
+        experiment=ExperimentConfig(name="test-exp", task="test-task"),
+        data=DataConfig(input=Path("in.csv"), output=Path("out")),
+        compute=ComputeConfig(location="local"),
+        model=ModelConfig(path=models_file, num_samples=10, seed=42),
     )
     assert config.get_model_ids() == ["gpt-4", "claude-3-opus"]

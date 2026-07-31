@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, model_validator
 
 
 class PromptRowBase(BaseModel):
-    """Base model_id for a single prompt row.
+    """Base model for a single prompt row.
 
     Attributes:
         index: A unique dataset-level identifier for the prompt.
@@ -16,7 +16,7 @@ class PromptRowBase(BaseModel):
 
 
 class ResponsesRowBase(BaseModel):
-    """Base model_id for a single response row.
+    """Base model for a single response row.
 
     Attributes:
         index: A unique identifier for the response, corresponding to a prompt index.
@@ -39,7 +39,7 @@ class ResponsesRowBase(BaseModel):
 class PromptDatasetBase(BaseModel):
     """Schema for a collection of prompts.
 
-    This model_id ensures that all prompts in the collection have unique indices.
+    This model ensures that all prompts in the collection have unique indices.
 
     Attributes:
         prompts: A list of PromptRowBase objects.
@@ -67,7 +67,7 @@ class PromptDatasetBase(BaseModel):
 class ResponsesDatasetBase(BaseModel):
     """Schema for a collection of responses.
 
-    This model_id ensures that all responses have unique indices and that each
+    This model ensures that all responses have unique indices and that each
     row contains the same number of responses.
 
     Attributes:

@@ -58,8 +58,9 @@ local-inference = [
     "transformers>=5.7.0",
 ]
 remote-inference = [
-    "openai>=2.33.0",
+    "openai>=2.52.0",
     "requests>=2.33.1",
+    "tenacity>=9.0.0",
 ]
 
 [tool.uv]
